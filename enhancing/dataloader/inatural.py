@@ -8,12 +8,13 @@
 # ------------------------------------------------------------------------------------
 
 import os
-import PIL
-from typing import Any, Tuple, Union
-from pathlib import Path
-from typing import Optional, Union, Callable, Tuple, Any
 
+from pathlib import Path
+from typing import Any, Callable, Optional, Tuple, Union
+
+import PIL
 import torch
+
 from torchvision import transforms as T
 from torchvision.datasets.utils import download_and_extract_archive, verify_str_arg
 from torchvision.datasets.vision import VisionDataset
@@ -88,7 +89,7 @@ class INaturalistBase(VisionDataset):
         super().__init__(os.path.join(root, version), transform=transform, target_transform=target_transform)
 
         os.makedirs(root, exist_ok=True)
-        path_exist = os.path.isdir(os.path.join(root,version))
+        path_exist = os.path.isdir(os.path.join(root, version))
         if not path_exist:
             self.download()
 
@@ -205,8 +206,7 @@ class INaturalistBase(VisionDataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
 
-        return {'image': image, 'class': torch.tensor([target])}
-
+        return {"image": image, "class": torch.tensor([target])}
 
     def __len__(self) -> int:
         return len(self.index)
@@ -230,7 +230,6 @@ class INaturalistBase(VisionDataset):
                     if id == category_id:
                         return name
                 raise ValueError(f"Invalid category id {category_id} for {category_type}")
-
 
     def _check_integrity(self) -> bool:
         return os.path.exists(self.root) and len(os.listdir(self.root)) > 0
@@ -257,21 +256,13 @@ class INaturalistBase(VisionDataset):
 
 class INaturalistTrain(INaturalistBase):
     def __init__(self, root: str, resolution: Union[Tuple[int, int], int] = 256) -> None:
-        transform = T.Compose([
-            T.Resize(resolution),
-            T.RandomCrop(resolution),
-            T.RandomHorizontalFlip(),
-            T.ToTensor()
-        ])
+        transform = T.Compose([T.Resize(resolution), T.RandomCrop(resolution), T.RandomHorizontalFlip(), T.ToTensor()])
 
-        super().__init__(root=root, version='2021_train', transform=transform)
+        super().__init__(root=root, version="2021_train", transform=transform)
+
 
 class INaturalistValidation(INaturalistBase):
     def __init__(self, root: str, resolution: Union[Tuple[int, int], int] = 256) -> None:
-        transform = T.Compose([
-            T.Resize(resolution),
-            T.CenterCrop(resolution),
-            T.ToTensor()
-        ])
+        transform = T.Compose([T.Resize(resolution), T.CenterCrop(resolution), T.ToTensor()])
 
-        super().__init__(root=root, version='2021_valid', transform=transform)
+        super().__init__(root=root, version="2021_valid", transform=transform)

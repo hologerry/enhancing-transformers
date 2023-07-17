@@ -18,8 +18,8 @@ class BaseScheduler:
         pass
 
     def __call__(self, n: int) -> float:
-        assert hasattr(self, 'start')
-        
+        assert hasattr(self, "start")
+
         return self.schedule(n) * self.start
 
 
@@ -32,26 +32,26 @@ class ExponentialDecayScheduler(BaseScheduler):
         self.start = start
         self.end = end
         self.current = start
-        
+
     def schedule(self, n: int) -> float:
         if not n % self.decay_every_step:
-            res = np.exp(-self.scale_factor*n) * self.start
+            res = np.exp(-self.scale_factor * n) * self.start
             self.current = max(self.end, res)
-            
+
         return self.current / self.start
 
 
 class LambdaWarmUpCosineScheduler(BaseScheduler):
     def __init__(self, warm_up_steps: int, max_decay_steps: int, min_: float, max_: float, start: float) -> None:
         super().__init__()
-        assert (max_decay_steps >= warm_up_steps)
-        
+        assert max_decay_steps >= warm_up_steps
+
         self.warm_up_steps = warm_up_steps
         self.start = start
         self.min_ = min_
         self.max_ = max_
         self.max_decay_steps = max_decay_steps
-        self.last = 0.
+        self.last = 0.0
 
     def schedule(self, n: int) -> float:
         if n < self.warm_up_steps:
@@ -62,22 +62,22 @@ class LambdaWarmUpCosineScheduler(BaseScheduler):
             t = min(t, 1.0)
             res = self.min_ + 0.5 * (self.max_ - self.min_) * (1 + np.cos(t * np.pi))
             self.last = res
-    
+
         return res / self.start
-    
+
 
 class LambdaWarmUpLinearScheduler(BaseScheduler):
     def __init__(self, warm_up_steps: int, max_decay_steps: int, min_: float, max_: float, start: float) -> None:
         super().__init__()
-        assert (max_decay_steps >= warm_up_steps)
-        
+        assert max_decay_steps >= warm_up_steps
+
         self.warm_up_steps = warm_up_steps
         self.start = start
         self.min_ = min_
         self.max_ = max_
         self.max_decay_steps = max_decay_steps
-        self.last = 0.
-        
+        self.last = 0.0
+
     def schedule(self, n: int) -> float:
         if n < self.warm_up_steps:
             res = (self.max_ - self.start) / self.warm_up_steps * n + self.start
@@ -85,5 +85,5 @@ class LambdaWarmUpLinearScheduler(BaseScheduler):
         else:
             res = self.min_ + (self.max_ - self.min_) * (max_decay_steps - n) / max_decay_steps
             self.last = res
-    
+
         return res / self.start

@@ -1,0 +1,6 @@
+mkdir vit_vqgan
+cd vit_vqgan
+gdown 1DbHEBNzjefNfwG0AKvYKB64if5Usua2n
+gdown 1-9INRFzvxDlQxyLX3fGA9ZnL3HXYyeTf
+gdown 1HzNvpeqvUTHz9tQOiV6G2r5sHKKhKQUZ
+gdown 1syv0t3nAJ-bETFgFpztw9cPXghanUaM6
